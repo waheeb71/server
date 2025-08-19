@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import puppeteer from "puppeteer";
 import cors from "cors";
@@ -10,24 +9,38 @@ app.use(express.json());
 app.post("/generate-pdf", async (req, res) => {
   try {
     const { html } = req.body;
-    if (!html) throw new Error("لا يوجد HTML");
-    
-    const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+
+    const browser = await puppeteer.launch({
+      headless: "new",
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath()
+    });
+
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
+
     const pdfBuffer = await page.pdf({ format: "A4" });
+
     await browser.close();
 
     res.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="quote.pdf"`
+      "Content-Disposition": "attachment; filename=quote.pdf",
     });
     res.send(pdfBuffer);
   } catch (err) {
-    console.error("❌ Puppeteer error:", err);
-    res.status(500).send("خطأ في السيرفر");
+    console.error("❌ PDF generation error:", err);
+    res.status(500).send("Error generating PDF");
   }
 });
 
-
-app.listen(4000, () => console.log("🚀 Server running on http://localhost:4000"));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);
