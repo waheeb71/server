@@ -4,7 +4,7 @@ import io
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # للسماح بالطلبات من React
+CORS(app)
 
 @app.route('/generate-pdf', methods=['POST'])
 def generate_pdf():
@@ -12,32 +12,28 @@ def generate_pdf():
         data = request.json
         html_content = data.get('html', '<h1>Empty</h1>')
 
-        # CSS لإضافة العلامة المائية في منتصف الصفحة
-        watermark_css = CSS(string='''
-            @page {
-                size: A4;
-            }
-            body::after {
-                content: "";
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                width: 300px;  /* حجم العلامة المائية */
-                height: 300px;
-                margin-left: -150px;  /* نصف العرض */
-                margin-top: -150px;   /* نصف الطول */
-               background-image: url('https://raw.githubusercontent.com/waheeb71/server/main/watermark.png');
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: contain;
-                opacity: 0.1;  /* شفافية العلامة المائية */
-                z-index: -1;
-            }
-        ''')
+        # أضف العلامة المائية مباشرة في HTML باستخدام div
+        watermark_html = '''
+        <div style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            margin-left: -150px;
+            margin-top: -150px;
+            background-image: url('https://raw.githubusercontent.com/waheeb71/server/main/watermark.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            z-index: -1000;
+        "></div>
+        '''
 
-        # تحويل HTML إلى PDF بحجم A4 مع العلامة المائية
+        final_html = watermark_html + html_content
+
         pdf_file = io.BytesIO()
-        HTML(string=html_content).write_pdf(pdf_file, stylesheets=[watermark_css])
+        HTML(string=final_html).write_pdf(pdf_file)
         pdf_file.seek(0)
 
         return send_file(
