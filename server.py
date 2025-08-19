@@ -26,7 +26,7 @@ def generate_pdf():
                 height: 300px;
                 margin-left: -150px;  /* نصف العرض */
                 margin-top: -150px;   /* نصف الطول */
-                background-image: url('https://quotes553.netlify.app/watermark.png');
+               background-image: url('https://raw.githubusercontent.com/waheeb71/server/main/watermark.png');
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: contain;
