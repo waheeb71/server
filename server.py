@@ -25,7 +25,7 @@ def generate_pdf():
             background-image: url('https://raw.githubusercontent.com/waheeb71/server/main/watermark.png');
             background-size: contain;
             background-repeat: no-repeat;
-            opacity: 0.1;
+            opacity: 0.4;
             z-index: -1000;
         "></div>
         '''
