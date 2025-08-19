@@ -10,6 +10,7 @@ app.post("/generate-pdf", async (req, res) => {
   try {
     const { html } = req.body;
 
+    // 🟢 فتح المتصفح
     const browser = await puppeteer.launch({
       headless: "new",
       args: [
@@ -19,12 +20,15 @@ app.post("/generate-pdf", async (req, res) => {
         "--single-process",
         "--no-zygote",
       ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath()
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
     });
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
 
+    // 🟢 تحميل المحتوى مع DOMContentLoaded لتجنب مشاكل الشبكة
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
+
+    // 🟢 توليد PDF
     const pdfBuffer = await page.pdf({ format: "A4" });
 
     await browser.close();
@@ -34,12 +38,15 @@ app.post("/generate-pdf", async (req, res) => {
       "Content-Disposition": "attachment; filename=quote.pdf",
     });
     res.send(pdfBuffer);
+
   } catch (err) {
+    // 🟢 طباعة الخطأ الكامل في logs
     console.error("❌ PDF generation error:", err);
-    res.status(500).send("Error generating PDF");
+    res.status(500).send(`Error generating PDF: ${err.message}`);
   }
 });
 
+// Render يعطي PORT
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () =>
   console.log(`🚀 Server running on http://localhost:${PORT}`)
