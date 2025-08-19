@@ -19,10 +19,7 @@ app.post("/generate-pdf", async (req, res) => {
         "--single-process",
         "--no-zygote",
       ],
-      // 🟢 لو Render نزّل Chrome نستعمل المسار من متغير البيئة
-      executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH ||
-        puppeteer.executablePath(), 
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath()
     });
 
     const page = await browser.newPage();
@@ -43,7 +40,6 @@ app.post("/generate-pdf", async (req, res) => {
   }
 });
 
-// Render يستخدم PORT من البيئة
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () =>
   console.log(`🚀 Server running on http://localhost:${PORT}`)
