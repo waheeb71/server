@@ -2,8 +2,7 @@ from flask import Flask, request, send_file
 from weasyprint import HTML
 import io
 from flask_cors import CORS
-
-import io
+import os
 app = Flask(__name__)
 CORS(app)  # للسماح بالطلبات من React
 
