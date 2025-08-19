@@ -17,8 +17,12 @@ app.post("/generate-pdf", async (req, res) => {
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
         "--single-process",
-        "--no-zygote"
-      ]
+        "--no-zygote",
+      ],
+      // 🟢 لو Render نزّل Chrome نستعمل المسار من متغير البيئة
+      executablePath:
+        process.env.PUPPETEER_EXECUTABLE_PATH ||
+        puppeteer.executablePath(), 
     });
 
     const page = await browser.newPage();
@@ -34,11 +38,13 @@ app.post("/generate-pdf", async (req, res) => {
     });
     res.send(pdfBuffer);
   } catch (err) {
-    console.error(err);
+    console.error("❌ PDF generation error:", err);
     res.status(500).send("Error generating PDF");
   }
 });
 
-// Render بيعطي PORT في متغير بيئة
+// Render يستخدم PORT من البيئة
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);
