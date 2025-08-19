@@ -25,7 +25,7 @@ await fetch("https://server-bd2c.onrender.com/generate-pdf", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ html: htmlContent }),
-});
+});```
 
 ---
 ##  Contact:
