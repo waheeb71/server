@@ -12,7 +12,7 @@ def generate_pdf():
         data = request.json
         html_content = data.get('html', '<h1>Empty</h1>')
 
-        # أضف العلامة المائية مباشرة في HTML باستخدام div
+     
         watermark_html = '''
         <div style="
             position: fixed;
