@@ -1,7 +1,9 @@
 # PDF Quote Generator Backend
 
 This repository contains the **backend** for a simple web application that generates PDF reports from quote data. The backend is responsible for converting HTML content received from the frontend into downloadable PDF files.
+## API Endpoint
 
+**POST** `https://server-bd2c.onrender.com/generate-pdf`
 ## Overview
 
 - Receive HTML content from the frontend.
